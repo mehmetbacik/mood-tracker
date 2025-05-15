@@ -1,30 +1,28 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, FlatList, Alert } from "react-native";
-import MoodOption from "../components/MoodOption";
+import { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Alert, ActivityIndicator } from 'react-native';
+import MoodOption from '../components/MoodOption';
+import { useMoodStorage } from '../hooks/useMoodStorage';
 
-const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
-
-type MoodLog = {
-  mood: string;
-  timestamp: number;
-};
+const moodList = ['😊 Happy', '😢 Sad', '😠 Angry', '😌 Relaxed', '😴 Tired'];
 
 export default function MoodSelectionScreen() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [moodLogs, setMoodLogs] = useState<MoodLog[]>([]);
+  const { moodLogs, addMood, isLoading } = useMoodStorage();
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
-
-    const newLog: MoodLog = {
-      mood,
-      timestamp: Date.now(),
-    };
-
-    setMoodLogs((prev) => [newLog, ...prev]);
-
-    Alert.alert("Mood Logged!", `You selected: ${mood}`);
+    addMood(mood);
+    Alert.alert('Mood Logged!', `You selected: ${mood}`);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+        <Text>Loading your mood logs...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -58,14 +56,19 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 22,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: '500',
     marginTop: 30,
     marginBottom: 10,
   },
