@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import MoodOption from "../components/MoodOption";
 import { useMoodStorage } from "../hooks/useMoodStorage";
-import { COLORS } from '../constants/colors';
+import { COLORS } from "../constants/colors";
+import { format } from "timeago.js";
 
 const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
 
@@ -70,7 +71,7 @@ export default function MoodSelectionScreen() {
             keyExtractor={(item) => item.timestamp.toString()}
             renderItem={({ item }) => (
               <Text style={styles.logItem}>
-                {item.mood} - {new Date(item.timestamp).toLocaleString()}
+                {item.mood} — {format(item.timestamp)}
               </Text>
             )}
           />
@@ -92,18 +93,18 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 20,
     color: COLORS.text,
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 30,
     marginBottom: 10,
     color: COLORS.text,
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   },
   noLogs: {
     fontSize: 16,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     color: COLORS.muted,
     marginTop: 10,
   },
