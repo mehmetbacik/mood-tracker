@@ -19,10 +19,14 @@ export default function MoodSelectionScreen() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const { moodLogs, addMood, clearMoods, isLoading } = useMoodStorage();
 
-  const handleMoodSelect = (mood: string) => {
-    setSelectedMood(mood);
-    addMood(mood);
-    Alert.alert("Mood Logged!", `You selected: ${mood}`);
+  const handleMoodSelect = async (mood: string) => {
+    const added = await addMood(mood);
+    if (added) {
+      setSelectedMood(mood);
+      Alert.alert("Mood Logged!", `You selected: ${mood}`);
+    } else {
+      Alert.alert("Already logged", "You have already logged your mood today.");
+    }
   };
 
   const handleClear = () => {

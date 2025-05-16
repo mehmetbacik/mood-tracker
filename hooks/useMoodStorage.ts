@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { isSameDay } from 'date-fns';
-
+import { isSameDay } from "date-fns";
 
 export type MoodLog = {
   mood: string;
@@ -32,14 +31,22 @@ export function useMoodStorage() {
   }, []);
 
   const addMood = async (mood: string) => {
+    if (
+      moodLogs.length > 0 &&
+      isSameDay(new Date(moodLogs[0].timestamp), new Date())
+    ) {
+      return false;
+    }
     const newLog = { mood, timestamp: Date.now() };
     const updated = [newLog, ...moodLogs];
     setMoodLogs(updated);
+
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch (err) {
       console.error("Error saving mood", err);
     }
+    return true;
   };
 
   const clearMoods = async () => {
