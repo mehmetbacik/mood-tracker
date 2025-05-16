@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { isSameDay } from 'date-fns';
+
 
 export type MoodLog = {
   mood: string;
@@ -49,10 +51,16 @@ export function useMoodStorage() {
     }
   };
 
+  const getTodayMood = (): MoodLog | null => {
+    const today = moodLogs.find((log) => isSameDay(log.timestamp, Date.now()));
+    return today || null;
+  };
+
   return {
     moodLogs,
     addMood,
     clearMoods,
     isLoading,
+    getTodayMood,
   };
 }
