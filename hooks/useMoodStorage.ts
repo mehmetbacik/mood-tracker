@@ -1,12 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 
 export type MoodLog = {
   mood: string;
   timestamp: number;
 };
 
-const STORAGE_KEY = 'MOOD_LOGS';
+const STORAGE_KEY = "MOOD_LOGS";
 
 export function useMoodStorage() {
   const [moodLogs, setMoodLogs] = useState<MoodLog[]>([]);
@@ -20,7 +20,7 @@ export function useMoodStorage() {
           setMoodLogs(JSON.parse(saved));
         }
       } catch (err) {
-        console.error('Error loading moods', err);
+        console.error("Error loading moods", err);
       } finally {
         setIsLoading(false);
       }
@@ -36,13 +36,23 @@ export function useMoodStorage() {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch (err) {
-      console.error('Error saving mood', err);
+      console.error("Error saving mood", err);
+    }
+  };
+
+  const clearMoods = async () => {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY);
+      setMoodLogs([]);
+    } catch (err) {
+      console.error("Error clearing moods", err);
     }
   };
 
   return {
     moodLogs,
     addMood,
+    clearMoods,
     isLoading,
   };
 }
