@@ -1,36 +1,41 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { COLORS } from '../constants/colors';
 
-type MoodOptionProps = {
+interface MoodOptionProps {
   label: string;
   onSelect: () => void;
   isSelected: boolean;
-};
+}
 
 export default function MoodOption({ label, onSelect, isSelected }: MoodOptionProps) {
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={onSelect}
-      style={[styles.option, isSelected && styles.selected]}
-    >
-      <Text style={styles.text}>{label}</Text>
-    </Pressable>
+      style={[styles.option, isSelected && styles.selectedOption]}>
+      <Text style={[styles.text, isSelected && styles.selectedText]}>{label}</Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   option: {
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginVertical: 6,
-    alignItems: 'center',
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 10,
   },
-  selected: {
-    backgroundColor: '#cce5ff',
-    borderColor: '#3399ff',
+  selectedOption: {
+    backgroundColor: COLORS.primary,
   },
   text: {
+    color: COLORS.text,
     fontSize: 16,
+    textAlign: 'center',
+  },
+  selectedText: {
+    color: COLORS.white,
+    fontWeight: 'bold',
   },
 });

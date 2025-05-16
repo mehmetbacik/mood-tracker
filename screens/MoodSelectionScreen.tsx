@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import MoodOption from "../components/MoodOption";
 import { useMoodStorage } from "../hooks/useMoodStorage";
+import { COLORS } from '../constants/colors';
 
 const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
 
@@ -85,33 +86,37 @@ export default function MoodSelectionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
     paddingTop: 60,
     paddingHorizontal: 20,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 24,
+    fontWeight: '700',
     marginBottom: 20,
+    color: COLORS.text,
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: '600',
     marginTop: 30,
     marginBottom: 10,
+    color: COLORS.text,
   },
   logItem: {
-    paddingVertical: 4,
+    paddingVertical: 6,
     fontSize: 16,
+    color: COLORS.text,
   },
   noLogs: {
     fontSize: 16,
-    fontStyle: "italic",
-    color: "#999",
+    fontStyle: 'italic',
+    color: COLORS.muted,
     marginTop: 10,
   },
 });
