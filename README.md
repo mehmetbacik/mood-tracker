@@ -1,4 +1,4 @@
-# Mode Tracker App
+# Mood Tracker App
 
 Mood Tracker is a simple and elegant mobile app built with **React Native** and **Expo**. It allows users to record their daily mood, store mood history, and view today’s mood entry in a clean interface. This is ideal for self-reflection and emotional awareness.
 
