@@ -24,21 +24,27 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    marginTop: 50,
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    backgroundColor: "#f9f9f9",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 26,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 20,
   },
   mood: {
-    fontSize: 28,
-    marginTop: 10,
-    color: "#4caf50",
+    fontSize: 32,
+    color: "#388e3c",
+    fontWeight: "500",
   },
   noMood: {
     fontSize: 18,
-    marginTop: 10,
-    color: "#999",
+    color: "#777",
+    fontStyle: "italic",
   },
 });
