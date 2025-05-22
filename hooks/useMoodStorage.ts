@@ -21,7 +21,7 @@ export function useMoodStorage() {
           setMoodLogs(JSON.parse(saved));
         }
       } catch (err) {
-        console.error("Error loading moods", err);
+        console.error("Error loading moods:", err);
       } finally {
         setIsLoading(false);
       }
@@ -31,12 +31,12 @@ export function useMoodStorage() {
   }, []);
 
   const addMood = async (mood: string) => {
-    if (
-      moodLogs.length > 0 &&
-      isSameDay(new Date(moodLogs[0].timestamp), new Date())
-    ) {
-      return false;
-    }
+    const today = new Date();
+    const alreadyLoggedToday =
+      moodLogs.length > 0 && isSameDay(new Date(moodLogs[0].timestamp), today);
+
+    if (alreadyLoggedToday) return false;
+
     const newLog = { mood, timestamp: Date.now() };
     const updated = [newLog, ...moodLogs];
     setMoodLogs(updated);
@@ -44,8 +44,9 @@ export function useMoodStorage() {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch (err) {
-      console.error("Error saving mood", err);
+      console.error("Error saving mood:", err);
     }
+
     return true;
   };
 
@@ -54,13 +55,15 @@ export function useMoodStorage() {
       await AsyncStorage.removeItem(STORAGE_KEY);
       setMoodLogs([]);
     } catch (err) {
-      console.error("Error clearing moods", err);
+      console.error("Error clearing moods:", err);
     }
   };
 
   const getTodayMood = (): MoodLog | null => {
-    const today = moodLogs.find((log) => isSameDay(log.timestamp, Date.now()));
-    return today || null;
+    const todayLog = moodLogs.find((log) =>
+      isSameDay(new Date(log.timestamp), new Date())
+    );
+    return todayLog || null;
   };
 
   return {

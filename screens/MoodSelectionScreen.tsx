@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import MoodOption from "../components/MoodOption";
 import { useMoodStorage } from "../hooks/useMoodStorage";
 import { COLORS } from "../constants/colors";
 import { format } from "timeago.js";
+import { isSameDay } from "date-fns";
 
 const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
 
@@ -19,13 +20,22 @@ export default function MoodSelectionScreen() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const { moodLogs, addMood, clearMoods, isLoading } = useMoodStorage();
 
+  useEffect(() => {
+    const todayLog = moodLogs.find((log) =>
+      isSameDay(new Date(log.timestamp), new Date())
+    );
+    if (todayLog) {
+      setSelectedMood(todayLog.mood);
+    }
+  }, [moodLogs]);
+
   const handleMoodSelect = async (mood: string) => {
     const added = await addMood(mood);
     if (added) {
       setSelectedMood(mood);
       Alert.alert("Mood Logged!", `You selected: ${mood}`);
     } else {
-      Alert.alert("Already logged", "You have already logged your mood today.");
+      Alert.alert("Already Logged", "You have already logged your mood today.");
     }
   };
 
@@ -68,21 +78,23 @@ export default function MoodSelectionScreen() {
 
       <Text style={styles.subtitle}>Mood Log</Text>
 
-      {moodLogs.length > 0 ? (
-        <>
-          <FlatList
-            data={moodLogs}
-            keyExtractor={(item) => item.timestamp.toString()}
-            renderItem={({ item }) => (
-              <Text style={styles.logItem}>
-                {item.mood} — {format(item.timestamp)}
-              </Text>
-            )}
-          />
+      <FlatList
+        data={moodLogs}
+        keyExtractor={(item) => item.timestamp.toString()}
+        renderItem={({ item }) => (
+          <Text style={styles.logItem}>
+            {item.mood} — {format(item.timestamp)}
+          </Text>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.noLogs}>No moods logged yet.</Text>
+        }
+      />
+
+      {moodLogs.length > 0 && (
+        <View style={styles.clearButtonContainer}>
           <Button title="Clear All Logs" color="red" onPress={handleClear} />
-        </>
-      ) : (
-        <Text style={styles.noLogs}>No moods logged yet.</Text>
+        </View>
       )}
     </View>
   );
@@ -123,5 +135,8 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     color: COLORS.muted,
     marginTop: 10,
+  },
+  clearButtonContainer: {
+    marginTop: 20,
   },
 });

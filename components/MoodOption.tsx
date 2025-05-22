@@ -1,6 +1,6 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import React from 'react';
-import { COLORS } from '../constants/colors';
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import React from "react";
+import { COLORS } from "../constants/colors";
 
 interface MoodOptionProps {
   label: string;
@@ -8,12 +8,20 @@ interface MoodOptionProps {
   isSelected: boolean;
 }
 
-export default function MoodOption({ label, onSelect, isSelected }: MoodOptionProps) {
+export default function MoodOption({
+  label,
+  onSelect,
+  isSelected,
+}: MoodOptionProps) {
   return (
     <TouchableOpacity
       onPress={onSelect}
-      style={[styles.option, isSelected && styles.selectedOption]}>
-      <Text style={[styles.text, isSelected && styles.selectedText]}>{label}</Text>
+      activeOpacity={0.8}
+      style={[styles.option, isSelected && styles.selectedOption]}
+    >
+      <Text style={[styles.text, isSelected && styles.selectedText]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -32,10 +40,10 @@ const styles = StyleSheet.create({
   text: {
     color: COLORS.text,
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   selectedText: {
     color: COLORS.white,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
