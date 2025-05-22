@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   View,
   Text,
@@ -16,8 +16,15 @@ import { isSameDay } from "date-fns";
 
 const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
 
-export default function MoodSelectionScreen() {
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+interface MoodSelectionScreenProps {
+  selectedMood: string | null;
+  onSelectMood: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export default function MoodSelectionScreen({
+  selectedMood,
+  onSelectMood,
+}: MoodSelectionScreenProps) {
   const { moodLogs, addMood, clearMoods, isLoading } = useMoodStorage();
 
   useEffect(() => {
@@ -25,14 +32,14 @@ export default function MoodSelectionScreen() {
       isSameDay(new Date(log.timestamp), new Date())
     );
     if (todayLog) {
-      setSelectedMood(todayLog.mood);
+      onSelectMood(todayLog.mood);
     }
   }, [moodLogs]);
 
   const handleMoodSelect = async (mood: string) => {
     const added = await addMood(mood);
     if (added) {
-      setSelectedMood(mood);
+      onSelectMood(mood);
       Alert.alert("Mood Logged!", `You selected: ${mood}`);
     } else {
       Alert.alert("Already Logged", "You have already logged your mood today.");

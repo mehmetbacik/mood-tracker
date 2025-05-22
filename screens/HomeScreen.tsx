@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useMoodStorage } from "../hooks/useMoodStorage";
 
-export default function HomeScreen() {
+interface HomeScreenProps {
+  selectedMood: string | null;
+  onSelectMood: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export default function HomeScreen({ selectedMood, onSelectMood }: HomeScreenProps) {
   const { getTodayMood, isLoading } = useMoodStorage();
   const [todayMood, setTodayMood] = useState<string | null>(null);
 

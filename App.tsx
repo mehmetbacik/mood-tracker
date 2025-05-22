@@ -10,9 +10,10 @@ export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {selectedMood ? (
-        <HomeScreen selectedMood={selectedMood} />
+        <HomeScreen selectedMood={selectedMood} onSelectMood={setSelectedMood} />
+
       ) : (
-        <MoodSelectionScreen onSelectMood={setSelectedMood} />
+        <MoodSelectionScreen onSelectMood={setSelectedMood} selectedMood={selectedMood} />
       )}
       <StatusBar style="auto" />
     </SafeAreaView>
