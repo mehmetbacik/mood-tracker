@@ -2,45 +2,33 @@ import { useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   Alert,
   ActivityIndicator,
-  Button,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import MoodOption from "../components/MoodOption";
 import { useMoodStorage } from "../hooks/useMoodStorage";
-import { COLORS } from "../constants/colors";
 import { format } from "timeago.js";
 import { isSameDay } from "date-fns";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
 const moodList = ["😊 Happy", "😢 Sad", "😠 Angry", "😌 Relaxed", "😴 Tired"];
 
-interface MoodSelectionScreenProps {
-  selectedMood: string | null;
-  onSelectMood: React.Dispatch<React.SetStateAction<string | null>>;
-}
+type MoodSelectionScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, "MoodSelection">;
+};
 
-export default function MoodSelectionScreen({
-  selectedMood,
-  onSelectMood,
-}: MoodSelectionScreenProps) {
+export default function MoodSelectionScreen({ navigation }: MoodSelectionScreenProps) {
   const { moodLogs, addMood, clearMoods, isLoading } = useMoodStorage();
-
-  useEffect(() => {
-    const todayLog = moodLogs.find((log) =>
-      isSameDay(new Date(log.timestamp), new Date())
-    );
-    if (todayLog) {
-      onSelectMood(todayLog.mood);
-    }
-  }, [moodLogs]);
 
   const handleMoodSelect = async (mood: string) => {
     const added = await addMood(mood);
     if (added) {
-      onSelectMood(mood);
       Alert.alert("Mood Logged!", `You selected: ${mood}`);
+      navigation.goBack();
     } else {
       Alert.alert("Already Logged", "You have already logged your mood today.");
     }
@@ -63,87 +51,60 @@ export default function MoodSelectionScreen({
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-        <Text>Loading your mood logs...</Text>
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color="#4F46E5" />
+        <Text className="mt-4 text-lg text-text">Loading your mood logs...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>How are you feeling today?</Text>
+    <ScrollView className="flex-1 bg-background">
+      <View className="p-6">
+        <Text className="text-2xl font-bold text-text mb-6">How are you feeling today?</Text>
 
-      {moodList.map((mood) => (
-        <MoodOption
-          key={mood}
-          label={mood}
-          onSelect={() => handleMoodSelect(mood)}
-          isSelected={selectedMood === mood}
-        />
-      ))}
-
-      <Text style={styles.subtitle}>Mood Log</Text>
-
-      <FlatList
-        data={moodLogs}
-        keyExtractor={(item) => item.timestamp.toString()}
-        renderItem={({ item }) => (
-          <Text style={styles.logItem}>
-            {item.mood} — {format(item.timestamp)}
-          </Text>
-        )}
-        ListEmptyComponent={
-          <Text style={styles.noLogs}>No moods logged yet.</Text>
-        }
-      />
-
-      {moodLogs.length > 0 && (
-        <View style={styles.clearButtonContainer}>
-          <Button title="Clear All Logs" color="red" onPress={handleClear} />
+        <View className="space-y-4 mb-8">
+          {moodList.map((mood) => (
+            <MoodOption
+              key={mood}
+              label={mood}
+              onSelect={() => handleMoodSelect(mood)}
+              isSelected={false}
+            />
+          ))}
         </View>
-      )}
-    </View>
+
+        <Text className="text-xl font-semibold text-text mb-4">Mood Log</Text>
+
+        <FlatList
+          data={moodLogs}
+          keyExtractor={(item) => item.timestamp.toString()}
+          scrollEnabled={false}
+          renderItem={({ item }) => (
+            <View className="bg-white rounded-lg p-4 mb-2 shadow-sm">
+              <Text className="text-lg text-text">
+                {item.mood} — {format(item.timestamp)}
+              </Text>
+            </View>
+          )}
+          ListEmptyComponent={
+            <Text className="text-lg text-gray-500 italic text-center py-4">
+              No moods logged yet.
+            </Text>
+          }
+        />
+
+        {moodLogs.length > 0 && (
+          <TouchableOpacity
+            onPress={handleClear}
+            className="mt-6 bg-red-500 rounded-lg py-4 px-6"
+          >
+            <Text className="text-white text-center font-semibold text-lg">
+              Clear All Logs
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 20,
-    color: COLORS.text,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 30,
-    marginBottom: 10,
-    color: COLORS.text,
-  },
-  logItem: {
-    paddingVertical: 6,
-    fontSize: 16,
-    color: COLORS.text,
-  },
-  noLogs: {
-    fontSize: 16,
-    fontStyle: "italic",
-    color: COLORS.muted,
-    marginTop: 10,
-  },
-  clearButtonContainer: {
-    marginTop: 20,
-  },
-});

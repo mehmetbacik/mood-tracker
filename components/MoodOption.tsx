@@ -1,6 +1,5 @@
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import React from "react";
-import { COLORS } from "../constants/colors";
 
 interface MoodOptionProps {
   label: string;
@@ -17,33 +16,17 @@ export default function MoodOption({
     <TouchableOpacity
       onPress={onSelect}
       activeOpacity={0.8}
-      style={[styles.option, isSelected && styles.selectedOption]}
+      className={`p-4 rounded-xl ${
+        isSelected ? "bg-primary" : "bg-secondary"
+      }`}
     >
-      <Text style={[styles.text, isSelected && styles.selectedText]}>
+      <Text
+        className={`text-center text-lg ${
+          isSelected ? "text-white font-bold" : "text-text"
+        }`}
+      >
         {label}
       </Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  option: {
-    backgroundColor: COLORS.secondary,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 10,
-  },
-  selectedOption: {
-    backgroundColor: COLORS.primary,
-  },
-  text: {
-    color: COLORS.text,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  selectedText: {
-    color: COLORS.white,
-    fontWeight: "bold",
-  },
-});
